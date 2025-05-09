@@ -26,7 +26,6 @@ service.interceptors.request.use(
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
       config.headers["appId"] = global.appId;
-
     }
     config.params = config.params || {};
     config.params.systemId = config.params.systemId || global.systemId;
@@ -104,7 +103,7 @@ service.interceptors.response.use(
 );
 
 // 封装GET请求
-export function get(url, params) {
+export function getAction(url, params) {
   return service({
     url,
     method: "get",
@@ -113,7 +112,7 @@ export function get(url, params) {
 }
 
 // 封装POST请求
-export function post(url, data) {
+export function postAction(url, data) {
   return service({
     url,
     method: "post",
@@ -122,7 +121,7 @@ export function post(url, data) {
 }
 
 // 封装PUT请求
-export function put(url, data) {
+export function putAction(url, data) {
   return service({
     url,
     method: "put",
@@ -131,7 +130,7 @@ export function put(url, data) {
 }
 
 // 封装DELETE请求
-export function del(url, params) {
+export function deleteAction(url, params) {
   return service({
     url,
     method: "delete",
