@@ -1,13 +1,30 @@
 const tokenKey = import.meta.env.VITE_TOKENKEY || 'token'
 
-import * as Cesium from 'cesium'
+// 动态导入cesium，避免强制依赖
 const getCesium = () => {
-  const microData = window.microApp?.getData()
-  if (microData && microData.cesium) {
-    return microData.cesium
+  try {
+    // 优先从微应用数据中获取cesium
+    const microData = window.microApp?.getData()
+    if (microData && microData.cesium) {
+      return microData.cesium
+    }
+    
+    // 尝试从全局获取cesium
+    if (window.Cesium) {
+      return window.Cesium
+    }
+    
+    // 尝试动态导入cesium（如果项目安装了cesium）
+    return import('cesium').catch(() => {
+      console.warn('Cesium模块未找到，请确保已安装或通过其他方式提供')
+      return null
+    })
+  } catch (error) {
+    console.warn('获取Cesium失败:', error)
+    return null
   }
-  return Cesium
 }
+
 const getToken = () => {
   const microData = window.microApp?.getData()
   if (microData && microData.token) {
