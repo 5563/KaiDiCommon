@@ -1,60 +1,60 @@
-import * as Cesium from 'cesium';
-const tokenKey = "shouyintoken";
+const tokenKey = import.meta.env.VITE_TOKENKEY || 'token'
 
-const getCesium = () =>{
-  const microData = window.microApp?.getData();
-  if(microData && microData.cesium){
-    return microData.cesium;
+import * as Cesium from 'cesium'
+const getCesium = () => {
+  const microData = window.microApp?.getData()
+  if (microData && microData.cesium) {
+    return microData.cesium
   }
-  return Cesium;
+  return Cesium
 }
 const getToken = () => {
-  const microData = window.microApp?.getData();
+  const microData = window.microApp?.getData()
   if (microData && microData.token) {
-    return microData.token;
+    return microData.token
   }
-  return localStorage.getItem(tokenKey);
-};
+  return localStorage.getItem(tokenKey)
+}
 
 const setToken = (token) => {
-  localStorage.setItem(tokenKey, token);
-};
+  localStorage.setItem(tokenKey, token)
+}
 
 const clearToken = () => {
-  localStorage.removeItem(tokenKey);
-};
+  localStorage.removeItem(tokenKey)
+}
 
 const getAppId = () => {
-  const microData = window.microApp?.getData();
+  const microData = window.microApp?.getData()
   if (microData && microData.appId) {
-    return microData.appId;
+    return microData.appId
   }
-  return import.meta.env.VITE_APPID;
-};
+  return import.meta.env.VITE_APPID
+}
 
 const getSystemId = () => {
-  const microData = window.microApp?.getData();
+  const microData = window.microApp?.getData()
   if (microData && microData.systemId) {
-    return microData.systemId;
+    return microData.systemId
   }
-  return import.meta.env.VITE_SYSTEM_ID;
-};
+  return import.meta.env.VITE_SYSTEM_ID
+}
 
 export default {
   get cesium() {
-    return getCesium();
+    return getCesium()
   },
   get token() {
-    return getToken();
+    return getToken()
   },
   set token(value) {
-    setToken(value);
+    setToken(value)
   },
   clearToken,
   get appId() {
-    return getAppId();
+    return getAppId()
   },
   get systemId() {
-    return getSystemId();
+    return getSystemId()
   },
-};
+}

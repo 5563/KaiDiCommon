@@ -3,7 +3,7 @@ import { ElMessage } from "element-plus";
 import global from "../utils/global";
 // 创建axios实例
 const service = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL || "/api", // 从环境变量获取API基础URL
+  baseURL: import.meta.env.VITE_BASE_URL || "https://api.hzcando.com", // 从环境变量获取API基础URL
   timeout: 15000, // 请求超时时间
 });
 
