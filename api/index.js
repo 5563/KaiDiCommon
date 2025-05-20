@@ -110,7 +110,7 @@ export function getAction(url, params) {
     params,
   });
 }
-
+export const get = getAction
 // 封装POST请求
 export function postAction(url, data) {
   return service({
@@ -119,7 +119,7 @@ export function postAction(url, data) {
     data,
   });
 }
-
+export const post = postAction
 // 封装PUT请求
 export function putAction(url, data) {
   return service({
@@ -128,7 +128,7 @@ export function putAction(url, data) {
     data,
   });
 }
-
+export const put = putAction
 // 封装DELETE请求
 export function deleteAction(url, params) {
   return service({
@@ -137,7 +137,7 @@ export function deleteAction(url, params) {
     params,
   });
 }
-
+export const del = deleteAction
 // 封装上传文件请求
 export function upload(url, file, onUploadProgress) {
   const formData = new FormData();
