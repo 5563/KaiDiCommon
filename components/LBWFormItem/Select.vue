@@ -11,7 +11,7 @@ const props = defineProps({
 const modelValue = defineModel('modelValue');
 const computedValue = computed({
   get() {
-    return modelValue.value + '';
+    return modelValue.value ? modelValue.value + '' : undefined;
   },
   set(value) {
     modelValue.value = value;
@@ -28,7 +28,7 @@ const options = computed(() => {
 </script>
 
 <template>
-  <ElSelect v-bind="$attrs" v-model="computedValue">
+  <ElSelect v-bind="$attrs" v-model="computedValue" style="min-width: 200px;">
     <ElOption
       v-for="item in options"
       :key="item.value"

@@ -1,9 +1,9 @@
 <template>
-  <div class="custom-table">
-    <div class="search-box">
+  <div class="custom-table" v-loading="props.loading">
+    <div class="search-box" >
       <el-form :inline="true">
           <template v-for="item in computedSearchColumns" :key="item.prop">
-            <slot :name="item.prop" v-bind="item">
+            <slot :name="'search_' + item.prop" v-bind="item">
               <FormItem v-model="queryParams[item.prop]" :useCol="false" v-bind="item" />
             </slot>
           </template>
@@ -15,8 +15,11 @@
       </el-form>
       
     </div>
+    <div class="button_box" v-if="$slots.buttonBox" style="margin-bottom: 10px;">
+      <slot name="buttonBox"></slot>
+    </div>
 
-    <el-table border :data="props.tableData" style="width: 100%">
+    <el-table border :data="props.tableData" style="width: 100%" row-key="id">
       <el-table-column v-for="column in computedColumns" :key="column.prop" v-bind="column">
         <template #default="scope">
           <slot v-if="column.prop" :name="column.prop" v-bind="scope">
@@ -76,15 +79,20 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 })
-const queryParams = defineModel('queryParams', {
+const queryParams = defineModel({
   default: () => ({}),
 })
 const computedColumns = computed(() => {
+  let tempColumns = []
   if (props.columns.some((column) => column.type === 'index') || props.hideIndex) {
-    return props.columns
+    tempColumns = props.columns
   } else {
-    return [
+    tempColumns = [
       {
         type: 'index',
         label: '序号',
@@ -94,19 +102,20 @@ const computedColumns = computed(() => {
       ...props.columns,
     ]
   }
+  return tempColumns.filter((column) => !column.hideTable)
 })
 const computedSearchColumns = computed(() => {
-  return props.columns.filter((column) => column.search)
+  return props.columns.filter((column) => column.search || column.showSearch)
 })
-const emit = defineEmits(['searchFromChange', 'search', 'reset'])
+const emit = defineEmits(['search', 'reset'])
+
+// 搜索函数
+const search = () => {
+  emit('search', queryParams.value)
+}
 
 // 重置函数
 const reset = () => {
-  const resetForm = {}
-  computedSearchColumns.value.forEach(item => {
-    resetForm[item.prop] = undefined
-  })
-  emit('searchFromChange', resetForm)
   emit('reset')
 }
 </script>

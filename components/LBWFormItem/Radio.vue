@@ -10,8 +10,8 @@ const props = defineProps({
 const modelValue = defineModel('modelValue');
 const computedValue = computed({
   get() {
-    return modelValue.value + '';
-  },
+    return modelValue.value ? modelValue.value + '' : undefined;
+    },
   set(value) {
     modelValue.value = value;
   },
