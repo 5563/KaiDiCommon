@@ -42,3 +42,14 @@ export function deepClone(obj) {
   }
   return cloneObj;
 }
+export function processVariable(input) {
+  if (typeof input === 'object' && input !== null) {
+    return input; // 如果是对象类型且不是null，返回本身
+  }
+
+  if (input !== undefined && input !== null && input !== '') {
+    return String(input); // 如果有值(包括数字、字符串、0等)，转换为字符串
+  }
+
+  return undefined; // 否则返回undefined
+}

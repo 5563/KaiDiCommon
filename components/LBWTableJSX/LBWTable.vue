@@ -1,25 +1,21 @@
 <template>
-  <div class="custom-table" v-loading="loading">
-    <div class="search-box">
+  <div class="custom-table" v-loading="props.loading">
+    <div class="search-box" >
       <el-form :inline="true">
-        <template v-for="item in computedSearchColumns" :key="item.prop">
-          <slot :name="'search_' + item.prop" v-bind="item">
-            <FormItem
-              v-model="queryParams[item.prop]"
-              :useCol="false"
-              v-bind="item"
-              :deleteRow="deleteRow"
-            />
-          </slot>
-        </template>
-        <FormItem :useCol="false">
-          <el-button type="primary" @click="search">搜索</el-button>
-          <el-button @click="reset">重置</el-button>
-          <slot name="searchButtonRight"></slot>
-        </FormItem>
+          <template v-for="item in computedSearchColumns" :key="item.prop">
+            <slot :name="'search_' + item.prop" v-bind="item">
+              <FormItem v-model="queryParams[item.prop]" :useCol="false" v-bind="item" />
+            </slot>
+          </template>
+          <FormItem :useCol="false">
+              <el-button type="primary" @click="search">搜索</el-button>
+              <el-button @click="reset">重置</el-button>
+              <slot name="searchButtonRight"></slot>
+          </FormItem>
       </el-form>
+      
     </div>
-    <div class="button_box" v-if="$slots.buttonBox" style="margin-bottom: 10px">
+    <div class="button_box" v-if="$slots.buttonBox" style="margin-bottom: 10px;">
       <slot name="buttonBox"></slot>
     </div>
 
@@ -50,12 +46,16 @@
 </template>
 
 <script setup>
-import { ElTable, ElTableColumn, ElPagination, ElForm, ElButton } from 'element-plus'
-import { computed, ref } from 'vue'
+import { ElTable, ElTableColumn, ElPagination, ElForm } from 'element-plus'
+import { computed } from 'vue'
 import FormItem from '../LBWFormItem/index.vue'
-import { array2Tree } from '../../utils/index.js'
 
 const props = defineProps({
+  // 表格数据
+  tableData: {
+    type: Array,
+    default: () => [],
+  },
   // 列配置
   columns: {
     type: Array,
@@ -64,6 +64,10 @@ const props = defineProps({
   layout: {
     type: String,
     default: 'total, sizes, prev, pager, next, jumper',
+  },
+  total: {
+    type: Number,
+    default: 0,
   },
   // 是否隐藏分页
   hidePagination: {
@@ -75,29 +79,12 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  pagesize: {
-    type: Number,
-    default: 10,
-  },
-  loadApi: {
-    type: Function,
-    default: () => {},
-  },
-  isTreeTable: {
+  loading: {
     type: Boolean,
     default: false,
   },
 })
-const tableData = ref([])
-const loading = ref(false)
-const ipagination = ref({
-  pageno: 1,
-  pagesize: props.pagesize,
-})
-const queryParams = defineModel('queryParams', {
-  default: () => ({}),
-})
-const staticQueryParams = defineModel('staticQueryParams', {
+const queryParams = defineModel({
   default: () => ({}),
 })
 const computedColumns = computed(() => {
@@ -120,37 +107,16 @@ const computedColumns = computed(() => {
 const computedSearchColumns = computed(() => {
   return props.columns.filter((column) => column.search || column.showSearch)
 })
-
-const loadData = async (page) => {
-  if (page) {
-    ipagination.value.pageno = page
-  }
-  loading.value = true
-  const res = await props
-    .loadApi({
-      ...staticQueryParams.value,
-      ...queryParams.value,
-      pagesize: ipagination.value.pagesize,
-      pageno: ipagination.value.pageno,
-    })
-    .finally(() => {
-      loading.value = false
-    })
-  tableData.value = res.data || []
-  if (props.isTreeTable) {
-    tableData.value = array2Tree(res.data || [], 'id', 'parentId')
-  }
-  ipagination.value.total = res.total || 0
-}
+const emit = defineEmits(['search', 'reset'])
 
 // 搜索函数
 const search = () => {
-  loadData(1)
+  emit('search', queryParams.value)
 }
 
 // 重置函数
 const reset = () => {
-  loadData()
+  emit('reset')
 }
 </script>
 <style lang="scss">

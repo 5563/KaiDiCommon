@@ -10,7 +10,7 @@ import DictSelect from './DictSelect.vue'
 import { computed } from 'vue'
 
 const props = defineProps({
-  type: {
+  formType: {
     type: String,
     default: 'input',
   },
@@ -41,7 +41,7 @@ const dateValueFormat = computed(() => {
 
 <template>
   <ElInput
-    v-if="type === 'input'"
+    v-if="formType === 'input'"
     :type="nativeType"
     v-bind="$attrs"
     :placeholder="$attrs.placeholder || '请输入内容'"
@@ -51,32 +51,32 @@ const dateValueFormat = computed(() => {
     </template>
   </ElInput>
   <el-date-picker
-    v-else-if="type === 'datePicker'"
+    v-else-if="formType === 'datePicker'"
     v-bind="$attrs"
     :type="nativeType"
     :value-format="dateValueFormat"
     :placeholder="$attrs.placeholder || '请选择'"
   />
   <ElTreeSelect
-    v-else-if="type === 'treeSelect'"
+    v-else-if="formType === 'treeSelect'"
     v-bind="$attrs"
     :data="$attrs.options || $attrs.data"
     :placeholder="$attrs.placeholder || '请选择'"
   />
   <Select
-    v-else-if="type === 'select'"
+    v-else-if="formType === 'select'"
     v-bind="$attrs"
     :placeholder="$attrs.placeholder || '请选择'"
   />
   <Radio
-    v-else-if="type === 'radio'"
+    v-else-if="formType === 'radio'"
     v-bind="$attrs"
     :placeholder="$attrs.placeholder || '请选择'"
   />
-  <UploadOneImg v-else-if="type === 'uploadOneImg'" v-bind="$attrs" />
+  <UploadOneImg v-else-if="formType === 'uploadOneImg'" v-bind="$attrs" />
   <!-- <LngLat v-else-if="type === 'lngLat'" v-bind="$attrs" /> -->
-  <DictTreeSelect v-else-if="type === 'dictTreeSelect'" v-bind="$attrs" />
-  <DictSelect v-else-if="type === 'dictSelect'" v-bind="$attrs" />
+  <DictTreeSelect v-else-if="formType === 'dictTreeSelect'" v-bind="$attrs" />
+  <DictSelect v-else-if="formType === 'dictSelect'" v-bind="$attrs" />
 </template>
 
 <style scoped lang="scss">

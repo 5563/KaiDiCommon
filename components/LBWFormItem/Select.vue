@@ -1,6 +1,9 @@
 <script setup>
-import { ElOption, ElSelect } from 'element-plus';
 import { computed } from 'vue';
+
+import { ElOption, ElSelect } from 'element-plus';
+
+import { processVariable } from '../../utils/index.js';
 
 const props = defineProps({
   options: {
@@ -11,7 +14,7 @@ const props = defineProps({
 const modelValue = defineModel('modelValue');
 const computedValue = computed({
   get() {
-    return modelValue.value ? modelValue.value + '' : undefined;
+    return processVariable(modelValue.value);
   },
   set(value) {
     modelValue.value = value;
@@ -20,15 +23,16 @@ const computedValue = computed({
 const options = computed(() => {
   return props.options.map((item) => {
     return {
+      ...item,
       label: item.label,
-      value: item.value + '',
+      value: processVariable(item.value),
     };
   });
 });
 </script>
 
 <template>
-  <ElSelect v-bind="$attrs" v-model="computedValue" style="min-width: 200px;">
+  <ElSelect v-bind="$attrs" v-model="computedValue" style="min-width: 200px">
     <ElOption
       v-for="item in options"
       :key="item.value"

@@ -5,7 +5,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 export function useLBWTable(loadApi, initParams = {}) {
   initParams = initParams || {}
   initParams = {
-    defLoadData: true,  
+    autoLoad: true,  
     defQueryParams: {},
     isTreeTable: false,
     pagesize: 10,
@@ -38,7 +38,7 @@ export function useLBWTable(loadApi, initParams = {}) {
     total.value = res.total || 0
   }
   
-  if (initParams.defLoadData) {
+  if (initParams.autoLoad) {
     loadData(1)
   }
 

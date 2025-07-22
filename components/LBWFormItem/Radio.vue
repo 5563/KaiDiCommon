@@ -1,6 +1,10 @@
 <script setup>
-import { ElRadio, ElRadioGroup } from 'element-plus';
 import { computed } from 'vue';
+
+import { ElRadio, ElRadioGroup } from 'element-plus';
+
+import { processVariable } from '../../utils/index.js';
+
 const props = defineProps({
   options: {
     type: Array,
@@ -10,8 +14,8 @@ const props = defineProps({
 const modelValue = defineModel('modelValue');
 const computedValue = computed({
   get() {
-    return modelValue.value ? modelValue.value + '' : undefined;
-    },
+    return processVariable(modelValue.value);
+  },
   set(value) {
     modelValue.value = value;
   },
@@ -21,10 +25,13 @@ const computedOptions = computed(() => {
     if (typeof item === 'string') {
       return {
         label: item,
-        value: index + '',
+        value: `${index}`,
       };
     }
-    return item;
+    return {
+      ...item,
+      value: processVariable(item.value),
+    };
   });
 });
 </script>
@@ -34,11 +41,11 @@ const computedOptions = computed(() => {
     <ElRadio
       v-for="item in computedOptions"
       :key="item.value"
-      border
       :label="item.value"
-      size="large"
-      >{{ item.label }}</ElRadio
+      :value="item.value"
     >
+      {{ item.label }}
+    </ElRadio>
   </ElRadioGroup>
 </template>
 
