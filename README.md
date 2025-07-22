@@ -62,7 +62,6 @@ global.clearToken()       // 清空token
 // 其他全局属性
 global.appId              // 获取应用ID
 global.systemId           // 获取系统ID
-global.cesium             // 获取cesium对象
 
 // 数组转树结构工具
 import { array2Tree } from '@common/utils/index'

@@ -23,7 +23,7 @@
       <slot name="buttonBox"></slot>
     </div>
 
-    <el-table border :data="props.tableData" style="width: 100%" row-key="id">
+    <el-table border :data="tableData" style="width: 100%" row-key="id">
       <el-table-column v-for="column in computedColumns" :key="column.prop" v-bind="column">
         <template #default="scope">
           <slot v-if="column.prop" :name="column.prop" v-bind="scope">
@@ -41,9 +41,13 @@
       <el-pagination
         background
         size="small"
-        :total="props.total"
+        v-model:current-page="ipagination.pageno"
+        v-model:page-size="ipagination.pagesize"
+        :total="ipagination.total"
         :layout="props.layout"
-        v-bind="$attrs"
+        :page-sizes="props.pageSizes"
+        @current-change="handleCurrentChange"
+        @size-change="handleSizeChange"
       />
     </div>
   </div>
@@ -51,9 +55,11 @@
 
 <script setup>
 import { ElTable, ElTableColumn, ElPagination, ElForm, ElButton } from 'element-plus'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import FormItem from '../LBWFormItem/index.vue'
-import { array2Tree } from '../../utils/index.js'
+import { array2Tree, deepClone } from '../../utils/index.js'
+import { ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 
 const props = defineProps({
   // 列配置
@@ -87,6 +93,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  autoLoad: {
+    type: Boolean,
+    default: true,
+  },
+  pageSizes: {
+    type: Array,
+    default: () => [10, 20, 50, 100],
+  },
 })
 const tableData = ref([])
 const loading = ref(false)
@@ -97,6 +111,7 @@ const ipagination = ref({
 const queryParams = defineModel('queryParams', {
   default: () => ({}),
 })
+const optionsQueryParams = deepClone(queryParams.value)
 const staticQueryParams = defineModel('staticQueryParams', {
   default: () => ({}),
 })
@@ -115,7 +130,10 @@ const computedColumns = computed(() => {
       ...props.columns,
     ]
   }
-  return tempColumns.filter((column) => !column.hideTable)
+  return tempColumns.filter((column) => !column.hideTable).map(item => ({
+    ...item,
+    align: item.align || 'center',
+  }))
 })
 const computedSearchColumns = computed(() => {
   return props.columns.filter((column) => column.search || column.showSearch)
@@ -150,8 +168,46 @@ const search = () => {
 
 // 重置函数
 const reset = () => {
+  queryParams.value = deepClone(optionsQueryParams)
+  setTimeout(() =>{
+    loadData(1)
+  })
+}
+
+onMounted(() => {
+  if (props.autoLoad) {
+    loadData(1)
+  }
+})
+
+const handleCurrentChange = () => {
   loadData()
 }
+
+const handleSizeChange = (value) => {
+  console.log(value, '===========',  ipagination.value)
+  loadData(1)
+}
+const deleteRow = (delAction = () =>{}, row = {}) => {
+  // 二次确认
+  ElMessageBox.confirm('确定要删除这条数据吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(() => {
+    delAction({
+      id: row.id,
+    }).then(() => {
+      ElMessage.success('删除成功');
+      loadData();
+    })
+  }).catch(() => {})
+  
+}
+defineExpose({
+  loadData,
+  
+})
 </script>
 <style lang="scss">
 .custom-table {

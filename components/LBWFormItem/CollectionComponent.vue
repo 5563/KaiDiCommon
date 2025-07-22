@@ -1,7 +1,6 @@
 <script setup>
 import { ElInput, ElTreeSelect, ElDatePicker } from 'element-plus'
 
-// import LngLat from './lngLat.vue';
 import Radio from './Radio.vue'
 import Select from './Select.vue'
 import UploadOneImg from './UploadOneImg.vue'
@@ -74,7 +73,6 @@ const dateValueFormat = computed(() => {
     :placeholder="$attrs.placeholder || '请选择'"
   />
   <UploadOneImg v-else-if="formType === 'uploadOneImg'" v-bind="$attrs" />
-  <!-- <LngLat v-else-if="type === 'lngLat'" v-bind="$attrs" /> -->
   <DictTreeSelect v-else-if="formType === 'dictTreeSelect'" v-bind="$attrs" />
   <DictSelect v-else-if="formType === 'dictSelect'" v-bind="$attrs" />
 </template>
