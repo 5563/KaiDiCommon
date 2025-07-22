@@ -37,7 +37,7 @@ service.interceptors.request.use(
     return config
   },
   (error) => {
-    console.error('请求错误:', error)
+    // console.error('请求错误:', error)
     return Promise.reject(error)
   },
 )

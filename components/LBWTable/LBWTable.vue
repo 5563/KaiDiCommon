@@ -1,6 +1,6 @@
 <template>
   <div class="custom-table" v-loading="loading">
-    <div class="search-box">
+    <div class="search_box">
       <el-form :inline="true">
         <template v-for="item in computedSearchColumns" :key="item.prop">
           <slot :name="'search_' + item.prop" v-bind="item">
@@ -8,7 +8,6 @@
               v-model="queryParams[item.prop]"
               :useCol="false"
               v-bind="item"
-              :deleteRow="deleteRow"
             />
           </slot>
         </template>
@@ -23,18 +22,19 @@
       <slot name="buttonBox"></slot>
     </div>
 
-    <el-table border :data="tableData" style="width: 100%" row-key="id">
+    <el-table class="table_box" border :data="tableData" style="width: 100%" row-key="id">
       <el-table-column v-for="column in computedColumns" :key="column.prop" v-bind="column">
         <template #default="scope">
-          <slot v-if="column.prop" :name="column.prop" v-bind="scope">
+          <slot v-if="column.prop" :name="column.prop" v-bind="scope" :deleteRow="deleteRow">
             {{ scope.row[column.prop] }}
           </slot>
           <slot v-if="column.type && column.slot" :name="column.type" v-bind="scope"></slot>
         </template>
       </el-table-column>
     </el-table>
-
+    
     <div
+      class="pagination_box"
       v-if="!props.hidePagination"
       style="display: flex; justify-content: flex-end; margin-top: 10px"
     >
@@ -211,6 +211,18 @@ defineExpose({
 </script>
 <style lang="scss">
 .custom-table {
+  background-color: #fff;
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  .search_box, .button_box, .pagination_box {
+    flex-shrink: 0;
+  }
+  .table_box {
+    flex: 1;
+    height: 0;
+  }
   .el-table thead th {
     background-color: #f5f7fa !important;
   }
