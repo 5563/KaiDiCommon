@@ -30,7 +30,7 @@ const other = [
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: "./",
+  base: "/KaiDiCommon/",
   title: "内部组件库",
   description: "vue3微前端管理后台内部组件库",
   themeConfig: {
