@@ -6,5 +6,14 @@
     "docs:dev": "vitepress dev doc --host",
     "docs:build": "vitepress build doc",
     "docs:preview": "vitepress preview doc"
-  }
+  },
+  "name": "common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "author": "",
+  "license": "ISC"
 }
