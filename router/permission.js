@@ -12,7 +12,7 @@ const routerPermission = (router) => {
     if (token) {
       next();
     } else {
-      // next()
+      // next() 
       const redirectUrl = encodeURIComponent(
         window.location.origin + window.location.pathname + to.href
       );
