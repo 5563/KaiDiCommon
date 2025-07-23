@@ -1,0 +1,27 @@
+name: 打包vitepress
+on: 
+  push: 
+    branches:
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: build项目
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装依赖和打包
+        run: |
+          npm install
+          npm run docs:build
+
+      - name: 部署
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: doc/.vitepress/dist
