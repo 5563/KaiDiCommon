@@ -1,8 +1,8 @@
 name: 打包vitepress
 on: 
   push: 
-    branches:
-      - master
+    paths:
+      - 'doc/**'
 
 permissions:
   contents: write

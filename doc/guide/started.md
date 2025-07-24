@@ -10,10 +10,10 @@
 
 ```bash
 # 不指定分支
-git submodule add http://lbw@sso.hzcando.com:8080/r/newsystem/components.git common
+git submodule add https://github.com/5563/KaiDiCommon.git common
 
 # 指定分支
-git submodule add -b dev http://lbw@sso.hzcando.com:8080/r/newsystem/components.git common
+git submodule add -b dev https://github.com/5563/KaiDiCommon.git common
 ```
 
 ## 配置

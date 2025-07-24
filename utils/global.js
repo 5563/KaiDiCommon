@@ -1,4 +1,5 @@
-const tokenKey = import.meta.env.VITE_TOKENKEY || 'token'
+const microData = window.microApp?.getData()
+const tokenKey = microData && microData.tokenKey ? microData.tokenKey : import.meta.env.VITE_TOKENKEY || 'token'
 
 const getToken = () => {
   const microData = window.microApp?.getData()
