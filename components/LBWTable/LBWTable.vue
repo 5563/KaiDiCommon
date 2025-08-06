@@ -1,6 +1,7 @@
 <template>
   <div class="custom-table" v-loading="loading">
-    <div class="search_box">
+    <div class="search_box" v-if="!hideSearch">
+      <slot name="searchTop"></slot>
       <el-form :inline="true">
         <template v-for="item in computedSearchColumns" :key="item.prop">
           <slot :name="'search_' + item.prop" v-bind="item">
@@ -12,8 +13,14 @@
           </slot>
         </template>
         <FormItem :useCol="false">
-          <el-button type="primary" @click="search">搜索</el-button>
-          <el-button @click="reset">重置</el-button>
+          <template v-if="computedSearchColumns.length">
+            <el-button type="primary" @click="search">搜索</el-button>
+            <el-button @click="reset">重置</el-button>
+          </template>
+          <template v-else>
+            <el-button type="primary" @click="loadData">刷新</el-button>
+          </template>
+          
           <slot name="searchButtonRight"></slot>
         </FormItem>
       </el-form>
@@ -21,8 +28,16 @@
     <div class="button_box" v-if="$slots.buttonBox" style="margin-bottom: 10px">
       <slot name="buttonBox"></slot>
     </div>
-
-    <el-table class="table_box" border :data="tableData" style="width: 100%" row-key="id">
+    <div v-if="card" class="table_card_box">
+      <div :span="12" class="table_card_item" v-for="(item, index) in tableData" :key="item.id + index">
+        <slot name="table_card_item" :row="item" :index="index" :deleteRow="deleteRow">
+          <div class="card_box">
+            cardTable的单相
+          </div>
+        </slot>
+      </div>
+    </div>
+    <el-table v-else class="table_box" border :data="tableData" style="width: 100%" row-key="id">
       <el-table-column v-for="column in computedColumns" :key="column.prop" v-bind="column">
         <template #default="scope">
           <slot v-if="column.prop" :name="column.prop" v-bind="scope" :deleteRow="deleteRow">
@@ -59,7 +74,7 @@ import { computed, onMounted, ref } from 'vue'
 import FormItem from '../LBWFormItem/index.vue'
 import { array2Tree, deepClone } from '../../utils/index.js'
 import { ElMessageBox } from 'element-plus'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElRow, ElCol } from 'element-plus'
 
 const props = defineProps({
   // 列配置
@@ -70,6 +85,10 @@ const props = defineProps({
   layout: {
     type: String,
     default: 'total, sizes, prev, pager, next, jumper',
+  },
+  hideSearch: {
+    type: Boolean,
+    default: false,
   },
   // 是否隐藏分页
   hidePagination: {
@@ -101,6 +120,10 @@ const props = defineProps({
     type: Array,
     default: () => [10, 20, 50, 100],
   },
+  card: {
+    type: Boolean,
+    default: false,
+  }
 })
 const tableData = ref([])
 const loading = ref(false)
@@ -216,12 +239,28 @@ defineExpose({
   padding: 20px;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   .search_box, .button_box, .pagination_box {
     flex-shrink: 0;
   }
   .table_box {
     flex: 1;
     height: 0;
+  }
+  .table_card_box {
+    overflow: auto;
+    flex: 1;
+    height: 0;
+    background-color: #f5f5f5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    .table_card_item {
+      background-color: #fff;
+      min-width: 200px;
+      width: max-content;
+    }
   }
   .el-table thead th {
     background-color: #f5f7fa !important;
